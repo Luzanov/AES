@@ -11,7 +11,7 @@ import Foundation
 public struct IV {
     
     /// Raw initialization vector bytes.
-    let bytes: [UInt8]
+    public let bytes: [UInt8]
     
     /**
      Initialize a new initialization vector with raw bytes.

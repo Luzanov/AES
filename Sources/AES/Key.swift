@@ -11,10 +11,10 @@ import Foundation
 public struct Key {
     
     /// Raw key bytes.
-    let bytes: [UInt8]
+    public let bytes: [UInt8]
     
     /// Size of key.
-    let size: Size
+    public let size: Size
     
     /// Possible key sizes.
     public enum Size: Int {
