@@ -30,7 +30,7 @@ final public class Encryptor {
     
     private let cryptor: Cryptor
     
-    public init(key: Key, iv: [UInt8]) throws {
+    public init(key: Key, iv: IV) throws {
         self.cryptor = try Cryptor(operation: .encrypt, key: key, iv: iv)
     }
     
@@ -54,7 +54,7 @@ final public class Decryptor {
     
     private let cryptor: Cryptor
     
-    public init(key: Key, iv: [UInt8]) throws {
+    public init(key: Key, iv: IV) throws {
         self.cryptor = try Cryptor(operation: .decrypt, key: key, iv: iv)
     }
     

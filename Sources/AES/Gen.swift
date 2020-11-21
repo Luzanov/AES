@@ -13,7 +13,7 @@ import CommonCrypto
 import OpenSSL
 #endif
 
-internal func generateBytes(withCount count: Int) throws -> [UInt8] {
+func generateBytes(withCount count: Int) throws -> [UInt8] {
 
     var bytes = Array<UInt8>(repeating: 0, count: count)
 

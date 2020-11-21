@@ -6,10 +6,10 @@
 //
 
 /// AES block
-public struct Block {
+struct Block {
     
     /// Possible block sizes
-    public enum Size: Int {
+    enum Size: Int {
         case k128 = 16
     }
 }

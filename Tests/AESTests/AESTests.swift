@@ -34,7 +34,7 @@ final class AESTests: XCTestCase {
             let dataPart3: [UInt8] = Array(stringPart3.utf8)
 
             let key = try Key(size: .k128)
-            let iv = try generateBytes(withCount: 16)
+            let iv = try IV()
             let encryptor = try Encryptor(key: key, iv: iv)
             let decryptor = try Decryptor(key: key, iv: iv)
 
@@ -63,10 +63,9 @@ final class AESTests: XCTestCase {
     
     func testInvalidIV() {
         AESTests.testBlock {
-            let key = try Key(size: .k128)
-            let invalidIV = try generateBytes(withCount: 17)
+            let invalidIVbytes = try generateBytes(withCount: 17)
             
-            XCTAssertThrowsError(try Encryptor(key: key, iv: invalidIV)) {
+            XCTAssertThrowsError(try IV(bytes: invalidIVbytes)) {
                 if let error = $0 as? AES.Error {
                     XCTAssertEqual(error.code, Error.Code.invalidIVSize.rawValue)
                 } else {
@@ -108,10 +107,10 @@ final class AESTests: XCTestCase {
             let rndBytes768: [UInt8] = try generateBytes(withCount: 768)
             let rndBytes5000: [UInt8] = try generateBytes(withCount: 5000)
 
-            let iv: [UInt8] = [2,23,49,15,4,94,56,9,0,1,23,23,34,34,34,8]
-            let rndIv1: [UInt8] = try generateBytes(withCount: 16)
-            let rndIv2: [UInt8] = try generateBytes(withCount: 16)
-            let rndIv3: [UInt8] = try generateBytes(withCount: 16)
+            let iv = try IV(bytes: [2,23,49,15,4,94,56,9,0,1,23,23,34,34,34,8])
+            let rndIv1 = try IV()
+            let rndIv2 = try IV()
+            let rndIv3 = try IV()
             
             let keys: [Key] = [
                 defaultKey,
@@ -137,7 +136,7 @@ final class AESTests: XCTestCase {
                 rndBytes5000
             ]
             
-            let ivArray:  [Array<UInt8>] = [iv, rndIv1, rndIv2, rndIv3]
+            let ivArray: [IV] = [iv, rndIv1, rndIv2, rndIv3]
 
             for bytes in bytesArray {
                 for iv in ivArray {
@@ -161,9 +160,9 @@ final class AESTests: XCTestCase {
             while true {
                 try autoreleasepool {
                     let key = try Key(size: .k256)
-                    let iv = try generateBytes(withCount: 16)
+                    let iv = try IV()
                     let bytes = try generateBytes(withCount: 146)
-                    
+
                     let encryptor = try Encryptor(key: key, iv: iv)
                     let decryptor = try Decryptor(key: key, iv: iv)
 

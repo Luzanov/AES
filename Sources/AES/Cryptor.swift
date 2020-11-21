@@ -65,7 +65,7 @@ class Cryptor {
     
     
     /// Initialization vector
-    private let iv: [UInt8]
+    private let iv: IV
     
     /**
      Default Initializer.
@@ -74,18 +74,15 @@ class Cryptor {
         - key: Raw key material.
      - Returns: New Cryptor instance.
      */
-    init(operation: Operation, key: Key, iv: [UInt8]) throws {
+    init(operation: Operation, key: Key, iv: IV) throws {
         
-        guard iv.count == Block.Size.k128.rawValue else {
-            throw Error(code: .invalidIVSize)
-        }
         self.iv = iv
         
         #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
         
         let algorithm = CCAlgorithm(kCCAlgorithmAES)
         let options = CCOptions(kCCOptionPKCS7Padding)
-        let status = CCCryptorCreate(operation.nativeValue, algorithm, options, key.bytes, key.size.rawValue, iv, self.context)
+        let status = CCCryptorCreate(operation.nativeValue, algorithm, options, key.bytes, key.size.rawValue, iv.bytes, self.context)
         
         guard status == kCCSuccess else {
             throw Error(thrownBy: CommonCryptoError(status: status, reason: "Cryptor init returned unexpected status"))
@@ -116,10 +113,10 @@ class Cryptor {
         
         switch operation {
         case .encrypt:
-            status = EVP_EncryptInit_ex(self.context, cipher, nil, self.key.bytes, iv)
+            status = EVP_EncryptInit_ex(self.context, cipher, nil, self.key.bytes, iv.bytes)
             
         case .decrypt:
-            status = EVP_DecryptInit_ex(self.context, cipher, nil, self.key.bytes, iv)
+            status = EVP_DecryptInit_ex(self.context, cipher, nil, self.key.bytes, iv.bytes)
         }
         
         guard status == 1 else {
@@ -238,7 +235,7 @@ class Cryptor {
         
         #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
         
-        let status = CCCryptorReset(self.context.pointee, self.iv)
+        let status = CCCryptorReset(self.context.pointee, self.iv.bytes)
         
         guard status == kCCSuccess else {
             throw Error(thrownBy: CommonCryptoError(status: status))
